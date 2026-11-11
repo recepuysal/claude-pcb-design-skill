@@ -1,6 +1,6 @@
 ---
 name: pcb-design
-description: Profesyonel şematik + PCB tasarım süreci (EasyEDA ve KiCad, JLCPCB üretim/dizgi kurallarına göre). Kullanıcı şematik çizmek, PCB çizmek/yerleştirmek/route etmek, devre tasarlamak, mevcut bir şematik/PCB'yi (PDF, PNG, Gerber, KiCad/EasyEDA dosyası) incelemek ya da güç, Li-ion şarj, MCU (STM32, ESP32), motor sürücü, SPI/I2C/UART/USB/RS485 devresi kurmak istediğinde kullan. Use for any schematic capture, PCB layout, design review or JLCPCB fabrication/assembly task.
+description: Sıfırdan profesyonel şematik + PCB TASARIMI/ÇİZİMİ süreci (EasyEDA ve KiCad, JLCPCB üretim/dizgi kurallarına göre, kullanıcının çizim stiliyle). Kullanıcı şematik çiz, PCB çiz/yerleştir/route et, kart/devre tasarla, yeni proje başlat dediğinde ya da güç, Li-ion şarj, MCU (STM32, ESP32), motor sürücü, SPI/I2C/UART/USB/RS485 devresi kurmak istediğinde kullan. Bu skill tasarlar; mevcut KiCad projesinin derin analizi/incelemesi için kicad-happy'nin `kicad` ve `emc` skill'leri kullanılır (bu skill review fazlarında onları çağırır). Use for designing/drawing new schematics and PCB layouts.
 ---
 
 # PCB Tasarım Skill'i (PCB Design Skill)
@@ -81,10 +81,26 @@ Ekranı insan gibi göremediğin için şu yöntemi kullan:
 3. Bulduğun sorunları önem sırasına göre listele (Kritik / Önemli / Kozmetik), düzelt ve tekrar render et.
 4. En az **2 tur** review yapmadan teslim etme.
 
-## Hesap Araçları
+## Hesap ve Kontrol Araçları
 
 - `scripts/pcb_calc.py`: iz genişliği (IPC-2221), via akımı, I2C pull-up aralığı, LED direnci, gerilim bölücü, kristal yük kondansatörü ve LDO ısıl hesabı. Kullanım: `python scripts/pcb_calc.py --help`
 - `scripts/review.py`: KiCad projesi için ERC + DRC + render + özet. Kullanım: `python scripts/review.py <proje.kicad_pro> [--out klasor]`
+- `scripts/check_3d.py`: 3D model ↔ footprint hizalaması (merkez kayması, 90° dönüklük, boyut). **EasyEDA/LCSC'den alınan her footprint'te yerleşimden önce çalıştır.** Kutu karşılaştırması 180° hatalarını yakalayamaz. Pin 1 noktası, diyot bandı ve LED katodunu yüksek çözünürlüklü 3D render'da pad numaralarıyla tek tek karşılaştır. Konnektörlerde gövdenin ağız tarafına taşması normaldir; bacakların pad üstünde, ağzın kart kenarında olduğunu görselde doğrula.
+
+## kicad-happy ile Birlikte Çalışma (KiCad projelerinde)
+
+kicad-happy (`~/.claude/kicad-happy`, skill'ler: `kicad`, `emc`) derin analiz yapar. Bu skill tasarlar, kicad-happy doğrular. Betik yolu: `~/.claude/kicad-happy/skills/kicad/scripts/` (`PYTHONIOENCODING=utf-8` ile çalıştır).
+
+| Kapı | Çalıştır |
+|---|---|
+| Faz 3 sonu (şematik) | `analyze_schematic.py <sch> --text --stage schematic` |
+| Faz 6 sonu (routing) | `analyze_pcb.py <pcb> --full --schematic sch.json` + `cross_analysis.py` + `emc` skill'i + `analyze_thermal.py` |
+| Faz 8 (üretim) | `analyze_gerbers.py <gerber klasörü>` |
+
+Kurallar:
+- Her bulguyu **değerlendir**, körü körüne uygulama. Kararı tabloyla raporla: haklı → düzelt / tasarım tercihi → gerekçesiyle kabul / yanlış pozitif → neden.
+- `--lifecycle` ağ ve API anahtarı ister. Kullanıcı istemedikçe çalıştırma, raporda "yapılmadı" diye belirt.
+- Datasheet klasörü yoksa pin düzeyindeki iddialar "doğrulandı" değil, "tutarlılık kontrolü" olarak raporlanır.
 
 ## Teslim Formatı
 

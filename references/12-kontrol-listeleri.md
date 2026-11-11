@@ -22,6 +22,8 @@ Bulguları önem sırasına göre ver: **Kritik** (kart çalışmaz/yanar) → *
 - [ ] Kullanılmayan pinlerde NC işareti; kullanılmayan op-amp/kapı birimleri sonlandırıldı
 - [ ] Programlama/debug portu ve test noktaları var
 
+- [ ] kicad-happy `analyze_schematic.py` bulguları değerlendirildi (düzelt / gerekçeli kabul)
+
 **Okunabilirlik / stil**
 - [ ] Kutu kutu blok düzeni; kutular hizalı ve başlıklı (`00-kullanici-stili.md`)
 - [ ] Sinyal soldan sağa, güç yukarıdan aşağıya akıyor; GND sembolleri aşağı bakıyor
@@ -38,6 +40,9 @@ Bulguları önem sırasına göre ver: **Kritik** (kart çalışmaz/yanar) → *
 - [ ] DNP parçalar işaretli; montaj deliği/fiducial BOM dışı
 
 ## B. Yerleşim Review
+
+- [ ] `check_3d.py` temiz; pin 1 / katot / konnektör yönü 3D render'da pad numaralarıyla doğrulandı
+- [ ] Breadboard/modül kartında header'lar alt yüzde, alt parçalar header plastiğinden alçak
 
 - [ ] Kart ölçüsü, delikler ve konnektör konumları mekaniğe uygun
 - [ ] Fonksiyon blokları gruplu; akış mantıklı

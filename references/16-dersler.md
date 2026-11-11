@@ -11,6 +11,14 @@ Format:
 
 ---
 
+## 2026-11-11 — NANO-C — 3D model koordinat hatası (kullanıcı fark etti)
+- Ne oldu: TYPE-C-31-M-12'nin EasyEDA 3D modeli footprint'e göre 180° yanlış dönük ve orijini 2.21 mm kayıktı. Gövde kartın içine kaymıştı. Yerleşim review'ında 3D ayrıntılı incelenmediği için kaçtı. Yalnız 180° düzeltmek de yetmedi, bacaklar bu kez ağız tarafına geçti.
+- Kural: Yerleşimden önce `scripts/check_3d.py` çalıştır. Sonra yüksek çözünürlüklü render'da her IC için pin 1 noktasını, her diyot/LED için katodu, her konnektör için bacak ve ağız yönünü pad numaralarıyla karşılaştır. Düzeltmeyi kütüphanede kalıcı yap (idempotent `fix_lib.py`), board'da değil.
+
+## 2026-11-11 — NANO-C — kicad-happy'nin yakaladıkları
+- Ne oldu: USBLC6'nın VBUS pinine datasheet'in istediği 100 nF eklenmemişti (bulk C sigortanın arkasındaydı). Label ile bağlanan VIN hattında PWR_FLAG yoktu; ERC bunu yakalamadı.
+- Kural: ESD IC'lerinin VBUS/VCC pinine kendi dekuplajını koy. Label ile gelen dış besleme raylarına (VIN vb.) PWR_FLAG ekle. Şematik kapısında kicad-happy `analyze_schematic.py` çalıştır.
+
 ## 2026-11-11 — NANO-C (Nano uyumlu USB-C) — Alan bütçesi Faz 0'da yapılmalı
 - Ne oldu: Kullanıcıya "tek yüz dizgi" seçeneği önerildi, kullanıcı onayladı. Yerleşimde 18×43 mm'ye sığmadığı ortaya çıktı ve soru yeniden soruldu. Orijinal Nano zaten çift yüzlü.
 - Kural: Form faktörü sabit kartlarda **Faz 0/1'de alan bütçesi** çıkar: Σ(pad+gövde alanı) × 1.5 ≤ kullanılabilir alan. Seçenek sunmadan önce hesapla. Footprint'lerin courtyard'ına değil **pad + gövde** sınırına bak (EasyEDA courtyard'ları yalnız gövdeyi kapsar). (`01-gereksinim-mimari.md`)
