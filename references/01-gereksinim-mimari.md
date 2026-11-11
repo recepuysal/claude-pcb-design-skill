@@ -64,7 +64,15 @@ Kurallar:
 | Arayüz | Uç birimler | Hız | Kablo/mesafe | Pull-up/terminasyon | ESD |
 |---|---|---|---|---|---|
 
-## 6. Mimari Kapı (Gate) — Kontrol
+## 6. Alan Bütçesi (Area Budget) — sabit ölçülü kartlarda zorunlu
+
+Montaj (tek/çift yüz) seçeneği sunmadan **önce** hesapla:
+1. Kullanılabilir alan = kart alanı − konnektör/header/montaj deliği yasak bölgeleri (ör. Nano: header sıraları arası ≈ 12.8 mm × 43 mm).
+2. Her parçanın **pad + gövde** dikdörtgenini topla (EasyEDA courtyard'ı yalnızca gövdeyi kapsar, pad'leri ekle).
+3. Σ alan × 1.5 (routing + boşluk payı) ≤ kullanılabilir alan → tek yüz mümkün. Değilse çift yüz, daha küçük paket ya da daha büyük kart seçeneklerini rakamlarla sun.
+4. Uzun parçalar için tek eksen kontrolü de yap: büyük parçaların yükseklikleri toplamı kart uzunluğunu aşıyor mu?
+
+## 7. Mimari Kapı (Gate) — Kontrol
 
 - [ ] Gereksinim tablosu kullanıcıyla teyit edildi
 - [ ] Blok diyagram var, her blok bir şematik sayfasına karşılık geliyor
@@ -72,3 +80,4 @@ Kurallar:
 - [ ] Pin tablosu var; boot/strapping pinleri kontrol edildi
 - [ ] Harici dünyaya açık her pin için koruma (ESD/seri direnç/TVS) kararı verildi
 - [ ] Mekanik kısıtlar (ölçü, delik, konnektör yerleri) belli ya da varsayım olarak yazıldı
+- [ ] Sabit ölçülü kartta alan bütçesi (§6) hesaplandı; tek/çift yüz kararı rakamla verildi

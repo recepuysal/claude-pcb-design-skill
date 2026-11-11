@@ -11,6 +11,22 @@ Format:
 
 ---
 
+## 2026-11-11 — NANO-C (Nano uyumlu USB-C) — Alan bütçesi Faz 0'da yapılmalı
+- Ne oldu: Kullanıcıya "tek yüz dizgi" seçeneği önerildi, kullanıcı onayladı. Yerleşimde 18×43 mm'ye sığmadığı ortaya çıktı ve soru yeniden soruldu. Orijinal Nano zaten çift yüzlü.
+- Kural: Form faktörü sabit kartlarda **Faz 0/1'de alan bütçesi** çıkar: Σ(pad+gövde alanı) × 1.5 ≤ kullanılabilir alan. Seçenek sunmadan önce hesapla. Footprint'lerin courtyard'ına değil **pad + gövde** sınırına bak (EasyEDA courtyard'ları yalnız gövdeyi kapsar). (`01-gereksinim-mimari.md`)
+
+## 2026-11-11 — NANO-C — EasyEDA footprint tuzakları
+- Ne oldu: TYPE-C-31-M-12 footprint'inde iki konum deliği kaplamalı (PTH, halka 0) tanımlıydı. Konnektörün kendi pad aralığı 0.1 mm idi ve genel 0.2 mm kuralına takıldı.
+- Kural: İçe aktarılan footprint'leri DRC'den geçir: numarasız PTH → NPTH yap. Fine-pitch konnektör için yalnız o footprint'e `.kicad_dru` kuralı yaz: `A.memberOfFootprint('J1') && B.memberOfFootprint('J1')` (`A.Parent.Reference` çalışmıyor). (`15-kicad-otomasyon.md`)
+
+## 2026-11-11 — NANO-C — Breadboard modüllerinde header yüzü
+- Ne oldu: Pin header'lar önce üst yüze kondu. Nano tipi modüllerde header pinleri aşağı bakar, plastik gövde **alt yüzde** kalır.
+- Kural: Breadboard/modül kartlarında 1×N header'ları alt yüze yerleştir. pcbnew'de tek sıralı header'ı `FLIP_DIRECTION_LEFT_RIGHT` ile çevir (TOP_BOTTOM pin sırasını ters çevirir). Çevirdikten sonra pin 1 konumunu pad dökümüyle doğrula.
+
+## 2026-11-11 — NANO-C — KiCad kurallarının yeri
+- Ne oldu: `board.GetDesignSettings()` ile yapılan kural değişiklikleri (kenar boşluğu) DRC'ye yansımadı, çünkü kurallar `.kicad_pro` dosyasında tutuluyor. Parity uyarıları footprint'e kopyalanmayan Datasheet/Manufacturer alanlarından çıktı.
+- Kural: Kuralları ve net class'ları `.kicad_pro` → `board.design_settings.rules` ve `net_settings` içine JSON olarak yaz. Netlist'teki tüm alanları (Datasheet ve Description dahil) `fp.SetField()` ile footprint'e kopyala.
+
 ## 2026-11-11 — genel — "Doğru ama amatör" çizim
 - Ne oldu: Önceki PCB/şematik çalışmalarında bağlantılar doğruydu ama kullanıcı çizimi profesyonel bulmadı.
 - Kural: Bu skill oluşturuldu. Faz kapıları, kontrol listeleri, kullanıcı stili (kutu kutu şematik, smooth yollar) ve en az 2 tur görsel öz-inceleme zorunlu hale getirildi.
